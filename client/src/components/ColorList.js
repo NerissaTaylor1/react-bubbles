@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axiosWithAuth from "../utils/axiosWithAuth";
 
 const initialColor = {
   color: "",
   code: { hex: "" }
 };
 
-const ColorList = ({ colors, updateColors }) => {
+const ColorList = ({ colors, updateColors, props }) => {
   console.log(colors);
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
@@ -21,25 +21,53 @@ const ColorList = ({ colors, updateColors }) => {
     // Make a put request to save your updated color
     // think about where will you get the id from...
     // where is is saved right now?
+    axiosWithAuth()
+      .put(`http://localhost:5000/api/colors/${colorToEdit.id}`, colorToEdit)
+      .then(res => {
+        updateColors(colors.map(color => {
+          if (colorToEdit.id === color.id) {
+            return color = res.data
+          } else {
+            return color
+          }
+        }))
+        this.props.history.push("/");
+
+      })
+      .catch(err => console.log(err.response));
+
   };
 
-  const deleteColor = color => {
+
+  const deleteColor = (e, color, id) => {
     // make a delete request to delete this color
-  };
+    e.preventDefault();
+    axiosWithAuth().delete(`http://localhost:5000/api/colors/${colorToEdit.id}`, colorToEdit)
+
+      .then(res => {
+        console.log(res.data)
+        setEditing(res.data)
+        props.history.push('/');
+
+      })
+      .catch(err => console.log(err));
+
+  }
+
+  if (!colors) {
+    return <div>Loading colors info...</div>
+  }
 
   return (
+
     <div className="colors-wrap">
       <p>colors</p>
       <ul>
         {colors.map(color => (
           <li key={color.color} onClick={() => editColor(color)}>
             <span>
-              <span className="delete" onClick={e => {
-                    e.stopPropagation();
-                    deleteColor(color)
-                  }
-                }>
-                  x
+              <span className="delete" onClick={deleteColor}>
+                x
               </span>{" "}
               {color.color}
             </span>
@@ -83,6 +111,7 @@ const ColorList = ({ colors, updateColors }) => {
       <div className="spacer" />
       {/* stretch - build another form here to add a color */}
     </div>
+
   );
 };
 
