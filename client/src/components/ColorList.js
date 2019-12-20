@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axiosWithAuth from "../utils/axiosWithAuth";
 
+
+
 const initialColor = {
   color: "",
   code: { hex: "" }
@@ -39,21 +41,19 @@ const ColorList = ({ colors, updateColors, props }) => {
   };
 
 
-  const deleteColor = (e, color, id) => {
+  const deleteColor = (e, color) => {
+
     // make a delete request to delete this color
     e.preventDefault();
     axiosWithAuth().delete(`http://localhost:5000/api/colors/${colorToEdit.id}`, colorToEdit)
-
       .then(res => {
-        console.log(res.data)
-        setEditing(res.data)
+        updateColors(colors.filter(color => `${color.id}` !== colorToEdit.id))
         props.history.push('/');
-
+        setColorToEdit(res.data)
       })
       .catch(err => console.log(err));
 
   }
-
   if (!colors) {
     return <div>Loading colors info...</div>
   }

@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import BubblePage from "./components/BubblePage";
 import PrivateRoute from "./components/PrivateRoute";
 import Login from "./components/Login";
-
+import ColorList from "./components/ColorList";
 import "./styles.scss";
 
 function App() {
@@ -22,6 +22,11 @@ function App() {
           <PrivateRoute path="/protected" component={BubblePage} />
           <Route exact path="/protected" component={BubblePage} />
           <Route path="/login" component={Login} />
+          <PrivateRoute path="/protected" component={ColorList} />
+          <Route path="/colors/:id" render={props => {
+            return <ColorList {...props} />
+          }}
+          />
         </Switch>
       </div>
     </Router>
