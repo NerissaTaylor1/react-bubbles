@@ -41,32 +41,52 @@ const ColorList = ({ colors, updateColors, props }) => {
   };
 
 
-  const deleteColor = (e, color) => {
+  // const deleteColor = (e, colors, colorToEdit, color, props, id) => {
 
-    // make a delete request to delete this color
-    e.preventDefault();
+
+
+
+  // make a delete request to delete this color
+
+  //   axiosWithAuth().delete(`http://localhost:5000/api/colors/${color.id}`)
+
+  //     .then(res => {
+  //       updateColors(colors.filter(color => { return `${color.id}` !== colorToEdit.id }))
+  //       this.history.push('/');
+  //       // setColorToEdit(res.data)
+  //     })
+  //     .catch(err => console.log(err))
+
+  // }
+
+  // const colors = props.colors.find(
+  //   thing => `${thing.id}` === props.match.params.id
+  // );
+
+  const deleteColor = ({ e, match, history, id, color }) => {
     axiosWithAuth().delete(`http://localhost:5000/api/colors/${colorToEdit.id}`, colorToEdit)
       .then(res => {
-        updateColors(colors.filter(color => `${color.id}` !== colorToEdit.id))
-        props.history.push('/');
-        setColorToEdit(res.data)
+        console.log(res);
+        updateColors(res.data);
       })
-      .catch(err => console.log(err));
-
+    this.props.history.push('/');
   }
+
   if (!colors) {
     return <div>Loading colors info...</div>
   }
 
   return (
 
+
     <div className="colors-wrap">
       <p>colors</p>
+
       <ul>
         {colors.map(color => (
           <li key={color.color} onClick={() => editColor(color)}>
             <span>
-              <span className="delete" onClick={deleteColor}>
+              <span className="delete" onClick={e => { deleteColor(color) }}>
                 x
               </span>{" "}
               {color.color}
