@@ -63,11 +63,12 @@ const ColorList = ({ colors, updateColors, props }) => {
   //   thing => `${thing.id}` === props.match.params.id
   // );
 
-  const deleteColor = ({ e, match, history, id, color }) => {
-    axiosWithAuth().delete(`http://localhost:5000/api/colors/${colorToEdit.id}`, colorToEdit)
+  const deleteColor = (id, color) => {
+    axiosWithAuth().delete(`http://localhost:5000/api/colors/${id}`)
       .then(res => {
         console.log(res);
-        updateColors(res.data);
+
+        updateColors(colors.filter(color => color.id !== id))
       })
     this.props.history.push('/');
   }
@@ -86,7 +87,7 @@ const ColorList = ({ colors, updateColors, props }) => {
         {colors.map(color => (
           <li key={color.color} onClick={() => editColor(color)}>
             <span>
-              <span className="delete" onClick={e => { deleteColor(color) }}>
+              <span className="delete" onClick={e => { deleteColor(color.id) }}>
                 x
               </span>{" "}
               {color.color}
