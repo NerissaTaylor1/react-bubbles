@@ -31,7 +31,7 @@ const ColorList = ({ colors, updateColors, props }) => {
             return color
           }
         }))
-        props.history.push("/");
+        props.history.push("/protected");
 
       })
       .catch(err => console.log(err.response));
