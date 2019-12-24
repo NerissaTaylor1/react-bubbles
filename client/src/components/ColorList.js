@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import axiosWithAuth from "../utils/axiosWithAuth";
 
-
-
 const initialColor = {
   color: "",
   code: { hex: "" }
@@ -33,7 +31,7 @@ const ColorList = ({ colors, updateColors, props }) => {
             return color
           }
         }))
-        this.props.history.push("/");
+        props.history.push("/");
 
       })
       .catch(err => console.log(err.response));
@@ -63,15 +61,35 @@ const ColorList = ({ colors, updateColors, props }) => {
   //   thing => `${thing.id}` === props.match.params.id
   // );
 
-  const deleteColor = (id, color) => {
+  const deleteColor = id => {
+
+
+    // const colors = Object.assign([], colorToEdit)
+    // colors.splice(index, 1);
+    // setColorToEdit({ colors: colors })
     axiosWithAuth().delete(`http://localhost:5000/api/colors/${id}`)
       .then(res => {
-        console.log(res);
+        updateColors(colors.filter(color => {
+          return color.id !== id;
+        }))
 
-        updateColors(colors.filter(color => color.id !== id))
+        props.history.push('/protected');
       })
-    this.props.history.push('/');
   }
+
+  // console.log(res);
+  // updateColors({
+  //   colorToEdit: colors.filter(color => {
+  //     if (color.id !== id) {
+  //       return color;
+  //     }
+  //   })
+  // })
+  // updateColors(colors.filter(color => color.id !== id))
+  // })
+
+
+
 
   if (!colors) {
     return <div>Loading colors info...</div>
@@ -87,7 +105,7 @@ const ColorList = ({ colors, updateColors, props }) => {
         {colors.map(color => (
           <li key={color.color} onClick={() => editColor(color)}>
             <span>
-              <span className="delete" onClick={e => { deleteColor(color.id) }}>
+              <span className="delete" onClick={() => deleteColor(color.id)}>
                 x
               </span>{" "}
               {color.color}
